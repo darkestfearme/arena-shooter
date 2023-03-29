@@ -5,16 +5,23 @@ export var speed = 300
 var last_direction = Vector2.UP
 const bulletpath = preload("res://bullet.tscn")
 var hp = 1.0
+var ammo = 10
+var reloading_time = 0
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		get_tree().quit()
 	
-	if event.is_action_pressed('p1_shoot'):
-		shoot()
-	
 	if event.is_action_pressed("ui_accept"):
 		get_tree().reload_current_scene()
+	
+	if reloading_time == 0:
+		if event.is_action_pressed('p1_shoot'):
+			if ammo > 0:
+				ammo -= 1
+				shoot()
+			else:
+				reloading_time = 3
 	
 func _process(delta):
 	$"../leftHUD/HP".rect_scale.x = hp
@@ -22,6 +29,12 @@ func _process(delta):
 func _physics_process(delta: float) -> void:
 	if dead:
 		return
+	
+	if reloading_time > 0:
+		reloading_time -= delta
+		if reloading_time < 0:
+			reloading_time = 0
+			ammo = 10
 	
 	var up = Vector2.UP * Input.get_action_strength("p1_up")
 	var down = Vector2.DOWN * Input.get_action_strength("p1_down")
@@ -55,3 +68,4 @@ func hit_by_bullet(bullet, collision):
 	
 func heal(amount):
 	hp += amount  
+
