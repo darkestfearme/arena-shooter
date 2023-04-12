@@ -1,34 +1,43 @@
 extends KinematicBody2D
 
+export var color: Color = Color.red
+
+var move_up: float = 0.0
+var move_down: float = 0.0
+var move_left: float = 0.0
+var move_right: float = 0.0
+var shoot: bool = false
+
 var dead = false
-export var speed = 300
+var speed = 505
 var last_direction = Vector2.UP
 const bulletpath = preload("res://bullet.tscn")
 var hp = 1.0
 var ammo = 10
 var reloading_time = 0
 
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel"):
-		get_tree().quit()
+func _ready():
+	$body/look.modulate = color
 	
-	if event.is_action_pressed("ui_accept"):
-		get_tree().reload_current_scene()
+func _process(delta):
+	if reloading_time > 0.0:
+		$reloading.show()
+		$reloading.rect_scale.x = reloading_time / 3.0
+	else:
+		$reloading.hide()
+
+func _physics_process(delta: float) -> void:
+	if dead:
+		return
 	
 	if reloading_time == 0:
-		if event.is_action_pressed('p1_shoot'):
+		if shoot:
+			shoot = false
 			if ammo > 0:
 				ammo -= 1
 				shoot()
 			else:
 				reloading_time = 3
-	
-func _process(delta):
-	$"../leftHUD/HP".rect_scale.x = hp
-
-func _physics_process(delta: float) -> void:
-	if dead:
-		return
 	
 	if reloading_time > 0:
 		reloading_time -= delta
@@ -36,10 +45,10 @@ func _physics_process(delta: float) -> void:
 			reloading_time = 0
 			ammo = 10
 	
-	var up = Vector2.UP * Input.get_action_strength("p1_up")
-	var down = Vector2.DOWN * Input.get_action_strength("p1_down")
-	var left = Vector2.LEFT * Input.get_action_strength("p1_left")
-	var right = Vector2.RIGHT * Input.get_action_strength("p1_right")
+	var up = Vector2.UP * move_up
+	var down = Vector2.DOWN * move_down
+	var left = Vector2.LEFT * move_left
+	var right = Vector2.RIGHT * move_right
 	
 	var direction = up + down + left + right
 	if direction:
@@ -62,7 +71,6 @@ func shoot():
 
 func hit_by_bullet(bullet, collision):
 	hp = clamp(hp - 0.35, 0.0, 1.0)
-	print("hit: ", str(hp))
 	if hp == 0:
 		dead = true
 	

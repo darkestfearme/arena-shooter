@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://player.gd" type="Script" id=2]
+
+[sub_resource type="RectangleShape2D" id=9]
+
+[node name="player1" type="KinematicBody2D"]
+position = Vector2( 150, 520 )
+scale = Vector2( 3, 3 )
+script = ExtResource( 2 )
+
+[node name="body" type="CollisionShape2D" parent="."]
+shape = SubResource( 9 )
+
+[node name="gun" type="Position2D" parent="body"]
+position = Vector2( 15, 0 )
+
+[node name="look" type="ColorRect" parent="body"]
+modulate = Color( 1, 0.278431, 0.278431, 1 )
+margin_left = -10.0
+margin_top = -10.0
+margin_right = 10.0
+margin_bottom = 10.0
+rect_pivot_offset = Vector2( 10, 10 )
+
+[node name="reloading" type="ColorRect" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -14.0
+margin_top = -16.0
+margin_right = 14.0
+margin_bottom = -13.0
+rect_pivot_offset = Vector2( 14, 0 )

@@ -1,5 +1,7 @@
 extends Label
 
-func _physics_process(delta):
-	if $"../player1".dead:
+func _process(delta):
+	if $"../player1".dead and not $"../player2".dead:
 		show()
+	else:
+		hide()
