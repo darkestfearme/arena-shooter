@@ -36,6 +36,7 @@ func _physics_process(delta: float) -> void:
 			if ammo > 0:
 				ammo -= 1
 				shoot()
+				$Behavior.bullet_shot()
 			else:
 				reloading_time = 3
 	
@@ -44,7 +45,8 @@ func _physics_process(delta: float) -> void:
 		if reloading_time < 0:
 			reloading_time = 0
 			ammo = 10
-	
+			$Behavior.reload()
+			
 	var up = Vector2.UP * move_up
 	var down = Vector2.DOWN * move_down
 	var left = Vector2.LEFT * move_left
