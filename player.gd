@@ -12,8 +12,10 @@ var dead = false
 var speed = 505
 var last_direction = Vector2.UP
 const bulletpath = preload("res://bullet.tscn")
+const granadepath = preload("res://flyinggranade.tscn")
 var hp = 1.0
 var ammo = 10
+var granade = false
 var reloading_time = 0
 
 func _ready():
@@ -33,12 +35,18 @@ func _physics_process(delta: float) -> void:
 	if reloading_time == 0:
 		if shoot:
 			shoot = false
-			if ammo > 0:
-				ammo -= 1
-				shoot()
-				$Behavior.bullet_shot()
+			
+			if granade:
+				granade = false
+				throw_granade()
+				$"body/granade-aim".hide()
 			else:
-				reloading_time = 3
+				if ammo > 0:
+					ammo -= 1
+					shoot()
+					$Behavior.bullet_shot()
+				else:
+					reloading_time = 3
 	
 	if reloading_time > 0:
 		reloading_time -= delta
@@ -62,6 +70,13 @@ func _physics_process(delta: float) -> void:
 	
 	hp = clamp(hp + 0.00, 0.0, 1.0)
 	
+	var items_to_pick = $picker.get_overlapping_bodies()
+	for item in items_to_pick:
+		if "granade" in item.name:
+			$"body/granade-aim".show()
+			granade = true
+		item.get_parent().remove_child(item)
+	
 func shoot():
 	var bullet = bulletpath.instance()
 	bullet.shot_by = self
@@ -71,11 +86,25 @@ func shoot():
 	bullet.position = $body/gun.global_position
 	bullet.rotation = last_direction.angle()
 
+func throw_granade():
+	var granade = granadepath.instance()
+	granade.thrown_by = self
+	
+	get_parent().add_child(granade)
+	
+	granade.position = $body.global_position
+	granade.rotation = last_direction.angle()
+
 func hit_by_bullet(bullet, collision):
 	hp = clamp(hp - 0.35, 0.0, 1.0)
 	if hp == 0:
 		dead = true
-	
+
+func hit_by_granade(granade):
+	hp = clamp(hp - 1.0, 0.0, 1.0)
+	if hp == 0:
+		dead = true
+
 func heal(amount):
 	hp += amount  
 

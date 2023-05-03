@@ -1,19 +1,32 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=6 format=2]
 
+[ext_resource path="res://grenade-aim.png" type="Texture" id=1]
 [ext_resource path="res://player.gd" type="Script" id=2]
 
 [sub_resource type="RectangleShape2D" id=9]
 
+[sub_resource type="SpriteFrames" id=10]
+animations = [ {
+"frames": [ ExtResource( 1 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=11]
+extents = Vector2( 30, 30 )
+
 [node name="player1" type="KinematicBody2D"]
 position = Vector2( 150, 520 )
-scale = Vector2( 3, 3 )
+collision_layer = 5
 script = ExtResource( 2 )
 
 [node name="body" type="CollisionShape2D" parent="."]
+scale = Vector2( 3, 3 )
 shape = SubResource( 9 )
 
 [node name="gun" type="Position2D" parent="body"]
-position = Vector2( 15, 0 )
+position = Vector2( 20, 0 )
 
 [node name="look" type="ColorRect" parent="body"]
 modulate = Color( 1, 0.278431, 0.278431, 1 )
@@ -23,11 +36,25 @@ margin_right = 10.0
 margin_bottom = 10.0
 rect_pivot_offset = Vector2( 10, 10 )
 
+[node name="granade-aim" type="AnimatedSprite" parent="body"]
+visible = false
+modulate = Color( 1, 0, 0, 0.364706 )
+position = Vector2( 130, 0 )
+scale = Vector2( 0.8, 0.8 )
+frames = SubResource( 10 )
+
 [node name="reloading" type="ColorRect" parent="."]
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = -14.0
-margin_top = -16.0
-margin_right = 14.0
-margin_bottom = -13.0
-rect_pivot_offset = Vector2( 14, 0 )
+margin_left = -42.0
+margin_top = -48.0
+margin_right = 42.0
+margin_bottom = -39.0
+rect_pivot_offset = Vector2( 42, 0 )
+
+[node name="picker" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="shape" type="CollisionShape2D" parent="picker"]
+shape = SubResource( 11 )

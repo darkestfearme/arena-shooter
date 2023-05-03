@@ -13,9 +13,6 @@ func _input(event):
 	if event.is_action_pressed("select"):
 		get_tree().quit()
 	
-	if event.is_action_pressed("start"):
-		get_tree().reload_current_scene()
-	
 	if event.is_action_pressed("p1_shoot"):
 		$"..".shoot = true
 
