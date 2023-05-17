@@ -75,7 +75,11 @@ func _physics_process(delta: float) -> void:
 		if "granade" in item.name:
 			$"body/granade-aim".show()
 			granade = true
-		item.get_parent().remove_child(item)
+		
+		# Both may pick it at the same moment.
+		var parent = item.get_parent()
+		if parent:
+			parent.remove_child(item)
 	
 func shoot():
 	var bullet = bulletpath.instance()

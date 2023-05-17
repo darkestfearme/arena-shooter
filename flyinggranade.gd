@@ -12,3 +12,5 @@ func _physics_process(delta):
 			player.hit_by_granade(self)
 		
 		get_parent().remove_child(self)
+		
+		
